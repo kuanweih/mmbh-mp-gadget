@@ -51,12 +51,12 @@ def main():
         mmbhhalomasss.append(mmbhhalomass)
         mmbhstarmasss.append(mmbhstarmass)
 
-        np.save('redshifts', np.array(redshifts))
-        np.save('mmbhmasss', np.array(mmbhmasss))
-        np.save('mmbhhalomasss', np.array(mmbhhalomasss))
-        np.save('mmbhstarmasss', np.array(mmbhstarmasss))
+    np.save('redshifts', np.array(redshifts))
+    np.save('mmbhmasss', np.array(mmbhmasss))
+    np.save('mmbhhalomasss', np.array(mmbhhalomasss))
+    np.save('mmbhstarmasss', np.array(mmbhstarmasss))
 
-        print('Done!')
+    print('Done!')
 
 
 if __name__ == '__main__':
