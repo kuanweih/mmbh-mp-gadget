@@ -56,6 +56,8 @@ def main():
         np.save('mmbhhalomasss', np.array(mmbhhalomasss))
         np.save('mmbhstarmasss', np.array(mmbhstarmasss))
 
+        print('Done!')
+
 
 if __name__ == '__main__':
     main()
