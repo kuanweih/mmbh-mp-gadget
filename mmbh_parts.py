@@ -4,10 +4,10 @@ from bigfile import BigFile
 from mmbh_func import *
 
 
-PATH_RUN = '/home/dir/PARTs/'
+PATH_RUN = '/nfs/nas-0-9/kuanweih/pj2_bhseed/362341/L10_N176/C12.85D/B5e3_H5e08/'
 
 
-def append_mmbh_data(bf, mmbh_datas):
+def append_mmbh_data(bf, redshifts, mmbhmasss, mmbhids, mmbhaccs, mmbhposs, mmbhvels):
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.
 
@@ -33,8 +33,12 @@ def append_mmbh_data(bf, mmbh_datas):
         mmbhvel = bhvel[np.argmax(bhmass)]
 
     # append data
-    mmbh_data = [redshift, mmbhmass, mmbhid, mmbhacc, mmbhpos, mmbhvel]
-    mmbh_datas.append(mmbh_data)
+    redshifts.append(redshift)
+    mmbhmasss.append(mmbhmass)
+    mmbhids.append(mmbhid)
+    mmbhaccs.append(mmbhacc)
+    mmbhposs.append(mmbhpos)
+    mmbhvels.append(mmbhvel)
 
 
 def append_merger_data(bf, mergerid, merger_datas):
@@ -49,15 +53,16 @@ def append_merger_data(bf, mergerid, merger_datas):
 
     if len(bhmass) > 0:
         mask_i = bhid == mergerid
-        bhmass_i = bhmass[mask_i][0]
-        bhacc_i = bhacc[mask_i][0]
-        bhpos_i = bhpos[mask_i][0]
-        bhvel_i = bhvel[mask_i][0]
+        if True in mask_i:
+            bhmass_i = bhmass[mask_i]
+            bhacc_i = bhacc[mask_i]
+            bhpos_i = bhpos[mask_i]
+            bhvel_i = bhvel[mask_i]
 
-        merger_data = [mergerid, redshift,
-                       bhmass_i, bhacc_i, bhpos_i, bhvel_i]
-
-        merger_datas.append(merger_data)
+            merger_data = np.array([mergerid, redshift, bhmass_i[0], bhacc_i[0],
+                                    bhpos_i[0][0], bhpos_i[0][1], bhpos_i[0][2],
+                                    bhvel_i[0][0], bhvel_i[0][1], bhvel_i[0][2]])
+            merger_datas.append(merger_data)
 
 
 def main():
@@ -67,24 +72,29 @@ def main():
     parts = sorted(glob.glob('{}PART_*'.format(PATH_RUN)))
     bfs = [BigFile(part) for part in parts]
 
-    mmbh_datas = []
+    redshifts = []
+    mmbhmasss = []
+    mmbhids = []
+    mmbhaccs = []
+    mmbhposs = []
+    mmbhvels = []
 
     for bf in bfs:
-        append_mmbh_data(bf, mmbh_datas)
-
+        append_mmbh_data(bf, redshifts, mmbhmasss,
+                         mmbhids, mmbhaccs, mmbhposs, mmbhvels)
 
     dir_name = 'partbhs/'
     create_dir(dir_name)
 
-    data_names = ['redshifts', 'mmbhmasss',
-                  'mmbhids', 'mmbhaccs', 'mmbhposs', 'mmbhvels']
+    np.save('{}redshifts'.format(dir_name), np.array(redshifts))
+    np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
+    np.save('{}mmbhids'.format(dir_name), np.array(mmbhids))
+    np.save('{}mmbhaccs'.format(dir_name), np.array(mmbhaccs))
+    np.save('{}mmbhposs'.format(dir_name), np.array(mmbhposs))
+    np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels))
 
-    mmbh_datas = np.array(mmbh_datas)
-    for v, data_name in enumerate(data_names):
-        np.save('{}{}'.format(dir_name, data_name), mmbh_datas[:,v])
-
-    mergerids = np.unique(mmbh_datas[:,2])
-    print('There are %d mergers happened' %len(mergerids))
+    mergerids = np.unique(mmbhids)
+    print('There are %d mergers happened' % len(mergerids))
 
     merger_datas = []
 
@@ -94,9 +104,6 @@ def main():
 
     merger_datas = np.array(merger_datas)
     np.save('{}merger_datas'.format(dir_name), merger_datas)
-
-
-
 
     print('Done!')
 

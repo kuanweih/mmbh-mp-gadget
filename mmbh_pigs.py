@@ -55,10 +55,10 @@ def main():
     dir_name = 'pigbhs/'
     create_dir(dir_name)
 
-    np.save('{}redshifts', np.array(redshifts))
-    np.save('{}mmbhmasss', np.array(mmbhmasss))
-    np.save('{}mmbhhalomasss', np.array(mmbhhalomasss))
-    np.save('{}mmbhstarmasss', np.array(mmbhstarmasss))
+    np.save('{}redshifts'.format(dir_name), np.array(redshifts))
+    np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
+    np.save('{}mmbhhalomasss'.format(dir_name), np.array(mmbhhalomasss))
+    np.save('{}mmbhstarmasss'.format(dir_name), np.array(mmbhstarmasss))
 
     print('Done!')
 
