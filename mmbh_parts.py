@@ -93,8 +93,8 @@ def main():
     np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
     np.save('{}mmbhids'.format(dir_name), np.array(mmbhids))
     np.save('{}mmbhaccs'.format(dir_name), np.array(mmbhaccs))
-    np.save('{}mmbhposs'.format(dir_name), np.array(mmbhposs))
-    np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels))
+    np.save('{}mmbhposs'.format(dir_name), np.array(mmbhposs[0]))
+    np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels[0]))
 
     print('Done with mmbh data from PARTs.')
 
