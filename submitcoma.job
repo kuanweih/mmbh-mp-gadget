@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N mmbh_pigs
+#PBS -N get-mmbh-data
 #PBS -M abcd28s@gmail.com
 #PBS -m abe
 #PBS -l nodes=1:ppn=16
@@ -12,3 +12,4 @@ cd $PBS_O_WORKDIR
 source active mypython3
 
 python  mmbh_pigs.py  1>stdout  2>stderr
+python  mmbh_parts.py  1>stdout  2>stderr

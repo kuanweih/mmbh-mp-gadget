@@ -1,9 +1,10 @@
 import numpy as np
 import glob
 from bigfile import BigFile
+from mmbh_func import *
 
 
-PATH_RUN = '/Users/kwhuang/Dropbox/PIGs/'
+PATH_RUN = '/home/dir/PIGs/'
 
 
 def main():
@@ -51,10 +52,13 @@ def main():
         mmbhhalomasss.append(mmbhhalomass)
         mmbhstarmasss.append(mmbhstarmass)
 
-    np.save('redshifts', np.array(redshifts))
-    np.save('mmbhmasss', np.array(mmbhmasss))
-    np.save('mmbhhalomasss', np.array(mmbhhalomasss))
-    np.save('mmbhstarmasss', np.array(mmbhstarmasss))
+    dir_name = 'pigbhs/'
+    create_dir(dir_name)
+
+    np.save('{}redshifts'.format(dir_name), np.array(redshifts))
+    np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
+    np.save('{}mmbhhalomasss'.format(dir_name), np.array(mmbhhalomasss))
+    np.save('{}mmbhstarmasss'.format(dir_name), np.array(mmbhstarmasss))
 
     print('Done!')
 
