@@ -6,6 +6,18 @@ from bigfile import BigFile
 PATH_RUN = '/home/dir/PARTs/'
 
 
+def create_dir(dir_name):
+    """ create directory name according to the run """
+    import os
+    import errno
+    if not os.path.exists(os.path.dirname(dir_name)):
+        try:
+            os.makedirs(os.path.dirname(dir_name))
+        except OSError as exc:  # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+
+
 def main():
     """
     get properties of the most massive black hole from all PART files
@@ -55,12 +67,15 @@ def main():
         mmbhvels.append(mmbhvel)
 
 
-    np.save('partbhs/redshifts', np.array(redshifts))
-    np.save('partbhs/mmbhmasss', np.array(mmbhmasss))
-    np.save('partbhs/mmbhids', np.array(mmbhids))
-    np.save('partbhs/mmbhaccs', np.array(mmbhaccs))
-    np.save('partbhs/mmbhposs', np.array(mmbhposs))
-    np.save('partbhs/mmbhvels', np.array(mmbhvels))
+    dir_name = 'partbhs/'
+    create_dir(dir_name)
+
+    np.save('{}redshifts'.format(dir_name), np.array(redshifts))
+    np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
+    np.save('{}mmbhids'.format(dir_name), np.array(mmbhids))
+    np.save('{}mmbhaccs'.format(dir_name), np.array(mmbhaccs))
+    np.save('{}mmbhposs'.format(dir_name), np.array(mmbhposs))
+    np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels))
 
     print('There are %d mergers happened' %len(np.unique(mmbhids)))
     print('Done!')
