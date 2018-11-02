@@ -4,10 +4,13 @@ from bigfile import BigFile
 from mmbh_func import *
 
 
-PATH_RUN = '/nfs/nas-0-9/kuanweih/pj2_bhseed/362341/L10_N176/C12.85D/B5e3_H5e08/'
+PATH_RUN = '/home/dir/PARTs/'
 
 
 def append_mmbh_data(bf, redshifts, mmbhmasss, mmbhids, mmbhaccs, mmbhposs, mmbhvels):
+    """
+    append the most massive BHs' data
+    """
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.
 
@@ -42,6 +45,9 @@ def append_mmbh_data(bf, redshifts, mmbhmasss, mmbhids, mmbhaccs, mmbhposs, mmbh
 
 
 def append_merger_data(bf, mergerid, merger_datas):
+    """
+    append the merger tree from the most massive BHs' data 
+    """
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.
 
@@ -93,8 +99,10 @@ def main():
     np.save('{}mmbhposs'.format(dir_name), np.array(mmbhposs))
     np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels))
 
+    print('Done with mmbh data from PARTs.')
+
     mergerids = np.unique(mmbhids)
-    print('There are %d mergers happened' % len(mergerids))
+    print('There are %d mergers happened.' % len(mergerids))
 
     merger_datas = []
 
@@ -105,7 +113,8 @@ def main():
     merger_datas = np.array(merger_datas)
     np.save('{}merger_datas'.format(dir_name), merger_datas)
 
-    print('Done!')
+    print('Done with merger data.')
+    print('Yeah we are finished :)')
 
 
 if __name__ == '__main__':

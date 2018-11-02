@@ -11,5 +11,5 @@ cd $PBS_O_WORKDIR
 
 source active mypython3
 
-python  mmbh_pigs.py  1>stdout  2>stderr
-python  mmbh_parts.py  1>stdout  2>stderr
+python  mmbh_pigs.py  1>stdout-pig  2>stderr-pig
+python  mmbh_parts.py  1>stdout-part  2>stderr-part

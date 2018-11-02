@@ -60,7 +60,7 @@ def main():
     np.save('{}mmbhhalomasss'.format(dir_name), np.array(mmbhhalomasss))
     np.save('{}mmbhstarmasss'.format(dir_name), np.array(mmbhstarmasss))
 
-    print('Done!')
+    print('Done with mmbh data from PIGs.')
 
 
 if __name__ == '__main__':
