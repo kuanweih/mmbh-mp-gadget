@@ -3,7 +3,7 @@ import glob
 from bigfile import BigFile
 
 
-PATH_RUN = '/Users/kwhuang/Dropbox/PIGs/'
+PATH_RUN = '/home/dir/PIGs/'
 
 
 def main():
@@ -51,10 +51,10 @@ def main():
         mmbhhalomasss.append(mmbhhalomass)
         mmbhstarmasss.append(mmbhstarmass)
 
-    np.save('redshifts', np.array(redshifts))
-    np.save('mmbhmasss', np.array(mmbhmasss))
-    np.save('mmbhhalomasss', np.array(mmbhhalomasss))
-    np.save('mmbhstarmasss', np.array(mmbhstarmasss))
+    np.save('pigbhs/redshifts', np.array(redshifts))
+    np.save('pigbhs/mmbhmasss', np.array(mmbhmasss))
+    np.save('pigbhs/mmbhhalomasss', np.array(mmbhhalomasss))
+    np.save('pigbhs/mmbhstarmasss', np.array(mmbhstarmasss))
 
     print('Done!')
 
