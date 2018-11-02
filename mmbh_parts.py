@@ -4,9 +4,6 @@ from bigfile import BigFile
 from mmbh_func import *
 
 
-PATH_RUN = '/home/dir/PARTs/'
-
-
 def append_mmbh_data(bf, redshifts, mmbhmasss, mmbhids, mmbhaccs, mmbhposs, mmbhvels):
     """
     append the most massive BHs' data
@@ -46,7 +43,7 @@ def append_mmbh_data(bf, redshifts, mmbhmasss, mmbhids, mmbhaccs, mmbhposs, mmbh
 
 def append_merger_data(bf, mergerid, merger_datas):
     """
-    append the merger tree from the most massive BHs' data 
+    append the merger tree from the most massive BHs' data
     """
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.

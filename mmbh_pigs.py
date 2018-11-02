@@ -4,9 +4,6 @@ from bigfile import BigFile
 from mmbh_func import *
 
 
-PATH_RUN = '/home/dir/PIGs/'
-
-
 def main():
     """
     get properties of the most massive black hole from all PIG files

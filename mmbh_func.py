@@ -1,3 +1,6 @@
+
+PATH_RUN = '/home/dir/'
+
 def create_dir(dir_name):
     """ create directory name according to the run """
     import os
