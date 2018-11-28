@@ -1,6 +1,20 @@
 
 PATH_RUN = '/home/dir/'
 
+BOXSIZE = 400.
+
+HUBBLE = 0.697
+TOMSUN = 1e10 / HUBBLE
+
+N_BIN = 30
+HALO_MIN = 1e8
+HALO_MAX = 1e13
+BH_MIN = 1e3
+BH_MAX = 1e9
+STAR_MIN = 1e5
+STAR_MAX = 1e12
+
+
 def create_dir(dir_name):
     """ create directory name according to the run """
     import os
