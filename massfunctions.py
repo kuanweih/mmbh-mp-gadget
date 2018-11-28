@@ -22,9 +22,7 @@ def mass_function(x, x_min, x_max, n_bin, boxsize):
     return: x_centers, mass function, histogram
     """
     x_bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bin, endpoint=True)
-
-    # out = [extract(x, x_bins[i], x_bins[i + 1]) for i in range(len(x_bin) - 1)]
-    out = (extract(x, x_bins[i], x_bins[i + 1]) for i in range(len(x_bin) - 1))
+    out = [extract(x, x_bins[i], x_bins[i + 1]) for i in range(len(x_bins) - 1)]
 
     x_centers = np.array(zip(*out)[0])
     y_counts = np.array(zip(*out)[1])
@@ -36,6 +34,23 @@ def mass_function(x, x_min, x_max, n_bin, boxsize):
     return x_centers[con], mass_func[con], y_counts[con]
 
 
+def get_mf_each_bf(bf):
+    header = bf.open('Header')
+    redshift = 1. / header.attrs['Time'][0] - 1.
+
+    bhmass = bf.open('5/BlackholeMass')[:] * TOMSUN
+    halomass = bf.open('FOFGroups/Mass')[:] * TOMSUN
+    starmass = bf.open('FOFGroups/MassByType')[:][:, 4] * TOMSUN
+
+    halo_mf = mass_function(halomass, HALO_MIN, HALO_MAX, N_BIN, BOXSIZE)
+    star_mf = mass_function(starmass, STAR_MIN, STAR_MAX, N_BIN, BOXSIZE)
+    bh_mf = mass_function(bhmass, BH_MIN, BH_MAX, N_BIN, BOXSIZE)
+
+    np.save('{}halo_mf_%0.2f'.format(dir_name) %redshift, halo_mf)
+    np.save('{}star_mf_%0.2f'.format(dir_name) %redshift, star_mf)
+    np.save('{}bh_mf_%0.2f'.format(dir_name) %redshift, bh_mf)
+
+
 def main():
     pigs = sorted(glob.glob('{}PIG_*'.format(PATH_RUN)))
     bfs = [BigFile(pig) for pig in pigs]
@@ -44,27 +59,9 @@ def main():
     create_dir(dir_name)
     print('Created pigmfs for mass functions.')
 
-    for bf in bfs:
-        header = bf.open('Header')
-        redshift = 1. / header.attrs['Time'][0] - 1.
-
-        bhmass = bf.open('5/BlackholeMass')[:] * TOMSUN
-        halomass = bf.open('FOFGroups/Mass')[:] * TOMSUN
-        starmass = bf.open('FOFGroups/MassByType')[:][:, 4] * TOMSUN
-
-        halo_mf = mass_function(halomass, HALO_MIN, HALO_MAX, N_BIN, BOXSIZE)
-        star_mf = mass_function(starmass, STAR_MIN, STAR_MAX, N_BIN, BOXSIZE)
-        bh_mf = mass_function(bhmass, BH_MIN, BH_MAX, N_BIN, BOXSIZE)
-
-        np.save('{}halo_mf_{}'.format(dir_name, redshift), halo_mf)
-        np.save('{}star_mf_{}'.format(dir_name, redshift), star_mf)
-        np.save('{}bh_mf_{}'.format(dir_name, redshift), bh_mf)
-
-
-# TODO: use multiprocessing when it is working fine
-# p = multiprocessing.Pool(16)
-# out = p.map(mmbh_from_txt, PATH_RUNS)
-# p.close()
+    p = multiprocessing.Pool(16)
+    out = p.map(get_mf_each_bf, bfs)
+    p.close()
 
 
 if __name__ == '__main__':
