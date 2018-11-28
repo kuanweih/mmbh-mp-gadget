@@ -1,6 +1,7 @@
 import numpy as np
 import glob
-import multiprocessing
+import multiprocessing as mp
+from functools import partial
 from bigfile import BigFile
 from mmbh_func import *
 
@@ -34,7 +35,7 @@ def mass_function(x, x_min, x_max, n_bin, boxsize):
     return x_centers[con], mass_func[con], y_counts[con]
 
 
-def get_mf_each_bf(bf):
+def get_mf_each_bf(dir_name, bf):
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.
 
@@ -46,9 +47,9 @@ def get_mf_each_bf(bf):
     star_mf = mass_function(starmass, STAR_MIN, STAR_MAX, N_BIN, BOXSIZE)
     bh_mf = mass_function(bhmass, BH_MIN, BH_MAX, N_BIN, BOXSIZE)
 
-    np.save('{}halo_mf_%0.2f'.format(dir_name) %redshift, halo_mf)
-    np.save('{}star_mf_%0.2f'.format(dir_name) %redshift, star_mf)
-    np.save('{}bh_mf_%0.2f'.format(dir_name) %redshift, bh_mf)
+    np.save('{}halo_mf_%0.4f'.format(dir_name) %redshift, halo_mf)
+    np.save('{}star_mf_%0.4f'.format(dir_name) %redshift, star_mf)
+    np.save('{}bh_mf_%0.4f'.format(dir_name) %redshift, bh_mf)
 
 
 def main():
@@ -59,9 +60,15 @@ def main():
     create_dir(dir_name)
     print('Created pigmfs for mass functions.')
 
-    p = multiprocessing.Pool(16)
-    out = p.map(get_mf_each_bf, bfs)
-    p.close()
+    for bf in bfs:
+        get_mf_each_bf(dir_name, bf)
+
+    # TODO multiprocessing bug. sad reacts only
+    # p = mp.Pool(16)
+    # func = partial(get_mf_each_bf, dir_name)
+    # p.map(func, bfs)
+    # p.close()
+    # p.join()
 
 
 if __name__ == '__main__':
