@@ -15,6 +15,8 @@ def main():
     mmbhmasss = []
     mmbhhalomasss = []
     mmbhstarmasss = []
+    mmbhaccs = []
+    mmbhsfrs = []
 
     for bf in bfs:
         header = bf.open('Header')
@@ -25,6 +27,8 @@ def main():
         halomass = bf.open('FOFGroups/Mass')[:]
         halofofid = bf.open('FOFGroups/GroupID')[:]
         starmass = bf.open('FOFGroups/MassByType')[:][:, 4]
+        bhacc = bf.open('5/BlackholeAccretionRate')[:]
+        sfr = bf.open('FOFGroups/StarFormationRate')[:]
 
         no_blackhole = len(bhmass) == 0
 
@@ -32,22 +36,29 @@ def main():
             mmbhmass = np.nan
             mmbhhalomass = np.nan
             mmbhstarmass = np.nan
+            mmbhacc = np.nan
+            mmbhsfr = np.nan
         else:
             mmbhmass = bhmass.max()
+            mmbhacc = bhacc[np.argmax(bhmass)]
 
             fofid_target = bhfofid[np.argmax(bhmass)]
             if sum(halofofid == fofid_target) > 1:
                 mmbhhalomass = np.nan
                 mmbhstarmass = np.nan
+                mmbhsfr = np.nan
             else:
                 mmbhhalomass = halomass[halofofid == fofid_target][0]
                 mmbhstarmass = starmass[halofofid == fofid_target][0]
+                mmbhsfr = sfr[halofofid == fofid_target][0]
 
         # append data
         redshifts.append(redshift)
         mmbhmasss.append(mmbhmass)
         mmbhhalomasss.append(mmbhhalomass)
         mmbhstarmasss.append(mmbhstarmass)
+        mmbhaccs.append(mmbhacc)
+        mmbhsfrs.append(mmbhsfr)
 
     dir_name = 'pigbhs/'
     create_dir(dir_name)
@@ -56,6 +67,8 @@ def main():
     np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
     np.save('{}mmbhhalomasss'.format(dir_name), np.array(mmbhhalomasss))
     np.save('{}mmbhstarmasss'.format(dir_name), np.array(mmbhstarmasss))
+    np.save('{}mmbhsfrs'.format(dir_name), np.array(mmbhsfrs))
+    np.save('{}mmbhaccs'.format(dir_name), np.array(mmbhaccs))
 
     print('Done with mmbh data from PIGs.')
 
