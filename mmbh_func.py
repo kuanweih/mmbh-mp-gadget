@@ -1,7 +1,7 @@
 
 PATH_RUN = '/home/dir/'
 
-BOXSIZE = 400.
+BOXSIZE = 15.    # Mpc/h
 
 HUBBLE = 0.697
 TOMSUN = 1e10 / HUBBLE
