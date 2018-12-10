@@ -49,9 +49,11 @@ def main():
                 mmbhsfr = np.nan
             else:
                 mmbhhalomass = halomass[halofofid == fofid_target][0]
+                mmbhhalomass = np.nan if mmbhhalomass==0 else mmbhhalomass
                 mmbhstarmass = starmass[halofofid == fofid_target][0]
+                mmbhstarmass = np.nan if mmbhstarmass==0 else mmbhstarmass
                 mmbhsfr = sfr[halofofid == fofid_target][0]
-
+        
         # append data
         redshifts.append(redshift)
         mmbhmasss.append(mmbhmass)
