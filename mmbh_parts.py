@@ -2,16 +2,14 @@ import numpy as np
 import glob
 from bigfile import BigFile
 from mmbh_func import *
-
+from numpy import linalg as la
+from nbodykit.lab import *
+from nbodykit.source.catalog import BigFileCatalog
 
 def get_t1(part, mmbhpos, nmesh):
     """
     return t1 around the most massive BH
     """
-    from numpy import linalg as la
-    from nbodykit.lab import *
-    from nbodykit.source.catalog import BigFileCatalog
-
     hydro = BigFileCatalog(part, dataset='0', header='Header')
     dm = BigFileCatalog(part, dataset='1', header='Header')
     star = BigFileCatalog(part, dataset='4', header='Header')
