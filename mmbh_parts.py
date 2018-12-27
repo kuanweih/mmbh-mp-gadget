@@ -48,6 +48,7 @@ def append_mmbh_data(part, redshifts, mmbhmasss, mmbhids,
         print('There is no BH formed at z = %0.2f' % redshift)
         return
 
+    print('Calculating properties at z = %0.2f' % redshift)
     bhid = bf.open('5/ID')[:]
     bhacc = bf.open('5/BlackholeAccretionRate')[:]
     bhpos = bf.open('5/Position')[:]
@@ -130,6 +131,7 @@ def main():
     np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels[0]))
     np.save('{}mmbht1s'.format(dir_name), np.array(mmbht1s))
 
+    print('\n')
     print('t1 are measured in (Mpc):')
     print(BOXSIZE / np.array([NMESHS]))
     print('Done with mmbh data from PARTs :) \n')
