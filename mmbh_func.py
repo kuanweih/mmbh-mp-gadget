@@ -1,7 +1,7 @@
 
 PATH_RUN = '/home/dir/'
 
-BOXSIZE = 15.    # Mpc/h
+BOXSIZE = 10.    # Mpc/h
 
 HUBBLE = 0.697
 TOMSUN = 1e10 / HUBBLE
@@ -16,7 +16,7 @@ STAR_MIN = 1e5
 STAR_MAX = 1e12
 
 """ t1 calculations"""
-NMESHS = [5, 15]    # BOXSIZE / scales
+NMESHS = [10, 7, 5, 3, 2]    # BOXSIZE / scales
 EPSILON = 1e-40    # deal with ki==0.
 
 
