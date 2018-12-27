@@ -6,6 +6,7 @@ from numpy import linalg as la
 from nbodykit.lab import *
 from nbodykit.source.catalog import BigFileCatalog
 
+
 def get_t1(part, mmbhpos, nmesh):
     """
     return t1 around the most massive BH
@@ -21,8 +22,7 @@ def get_t1(part, mmbhpos, nmesh):
                                      window='tsc', weight='Mass')
 
     tidal_tensor = np.array([[[s for s in combined_mesh.paint().r2c().apply(
-        lambda k, v: k[i] * k[j] / (sum(ki**2 for ki in k) + EPSILON)
-        * v * np.exp(-0.5 * sum(ki**2 for ki in k) * ss**2)
+        lambda k, v: k[i] * k[j] / (sum(ki**2 for ki in k) + EPSILON) * v
     ).c2r().readout([mmbhpos])] for i in range(0, 3)] for j in range(0, 3)]).reshape(3, 3)
 
     tidal_tensor -= np.trace(tidal_tensor) * np.identity(3) / 3.
@@ -45,7 +45,7 @@ def append_mmbh_data(part, redshifts, mmbhmasss, mmbhids,
 
     no_blackhole = len(bhmass) == 0
     if no_blackhole:
-        print('There is no BH formed at z = %0.2f' %redshift)
+        print('There is no BH formed at z = %0.2f' % redshift)
         return
 
     bhid = bf.open('5/ID')[:]
@@ -105,7 +105,7 @@ def main():
     """
     print('Start getting properties of mmbhs from all PARTs')
     parts = sorted(glob.glob('{}PART_*'.format(PATH_RUN)))
-    print('There are %d part files \n' %len(parts))
+    print('There are %d part files \n' % len(parts))
 
     redshifts = []
     mmbhmasss = []
