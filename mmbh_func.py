@@ -16,7 +16,8 @@ STAR_MIN = 1e5
 STAR_MAX = 1e12
 
 """ t1 calculations"""
-DZ = 0.1    # select output redshift range around int
+GET_T1 = False
+DZ = 0.04    # select output redshift range around int
 NMESHS = [10, 7, 5, 3, 2]    # BOXSIZE / scales
 EPSILON = 1e-40    # deal with ki==0.
 
