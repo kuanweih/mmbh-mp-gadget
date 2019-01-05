@@ -1,7 +1,7 @@
 
 PATH_RUN = '/home/dir/'
 
-BOXSIZE = 10.    # Mpc/h
+BOXSIZE = 15.    # Mpc/h
 
 HUBBLE = 0.697
 TOMSUN = 1e10 / HUBBLE
@@ -17,8 +17,9 @@ STAR_MAX = 1e12
 
 """ t1 calculations"""
 GET_T1 = False
+STARTZ = 15
 DZ = 0.04    # select output redshift range around int
-NMESHS = [10, 7, 5, 3, 2]    # BOXSIZE / scales
+NMESHS = [15, 10, 5, 3]    # BOXSIZE / scales
 EPSILON = 1e-40    # deal with ki==0.
 
 

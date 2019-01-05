@@ -60,7 +60,7 @@ def append_mmbh_data(part, redshifts, mmbhmasss, mmbhids,
     mmbhpos = bhpos[np.argmax(bhmass)]
     mmbhvel = bhvel[np.argmax(bhmass)]
 
-    if GET_T1 & (np.abs(redshift - round(redshift)) < DZ):
+    if GET_T1 & (redshift <= STARTZ) & (np.abs(redshift - round(redshift)) < DZ):
         print('    calculating t1...')
         mmbht1 = [get_t1(part, mmbhpos, nmesh) for nmesh in NMESHS]
     else:
