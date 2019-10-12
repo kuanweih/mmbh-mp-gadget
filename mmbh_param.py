@@ -1,10 +1,16 @@
 
-PATH_RUN = '/home/dir/'
+# PATH_RUN = '/home/dir/'
+PATH_RUN = '/home/kwhuang/B5H10/'
 
 BOXSIZE = 15.    # Mpc/h
 
+
+""" code units to paper units """
 HUBBLE = 0.697
-TOMSUN = 1e10 / HUBBLE
+TO_MSUN = 1e10 / HUBBLE    # mass to Msun
+TO_MSUN_YEAR = 10.2    # accretion rate to Msun/yr
+
+
 
 """ mass funcstions """
 N_BIN = 30
