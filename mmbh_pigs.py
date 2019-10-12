@@ -7,8 +7,8 @@ from mmbh_param import PATH_RUN, TO_MSUN, TO_MSUN_YEAR
 
 
 if __name__ == '__main__':
-    
-    print('Get properties of the most massive black hole from all PIG files')
+
+    print('Getting properties of the most massive BH from all PIG files\n')
     pigs = sorted(glob.glob('{}PIG_*'.format(PATH_RUN)))
     bfs = [BigFile(pig) for pig in pigs]
     print('There are %d PIG files \n' % len(bfs))
@@ -58,7 +58,7 @@ if __name__ == '__main__':
                 mmbhstarmass = np.nan if mmbhstarmass==0 else mmbhstarmass
                 mmbhsfr = sfr[mask_fofid][0]
 
-        print('    Appending bh quantities at z = %0.4f' % redshift)
+        print('    Appending BH quantities at z = %0.4f' % redshift)
         redshifts.append(redshift)
         mmbhmasss.append(mmbhmass)
         mmbhhalomasss.append(mmbhhalomass)
