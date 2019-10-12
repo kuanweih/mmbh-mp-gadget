@@ -1,56 +1,29 @@
-import numpy as np
 import glob
+import numpy as np
+
+from typing import List
 from bigfile import BigFile
-from mmbh_func import *
-from numpy import linalg as la
-from nbodykit.lab import *
-from nbodykit.source.catalog import BigFileCatalog
+from mmbh_param import PATH_RUN, TO_MSUN, TO_MSUN_YEAR
 
 
-def get_t1(part, mmbhpos, nmesh):
-    """
-    return t1 around the most massive BH
-    """
-    hydro = BigFileCatalog(part, dataset='0', header='Header')
-    dm = BigFileCatalog(part, dataset='1', header='Header')
-    star = BigFileCatalog(part, dataset='4', header='Header')
-    bh = BigFileCatalog(part, dataset='5', header='Header')
-
-    combined = MultipleSpeciesCatalog(['0', '1', '4', '5'], hydro, dm, star, bh)
-
-    combined_mesh = combined.to_mesh(Nmesh=nmesh, compensated=True,
-                                     window='tsc', weight='Mass')
-
-    tidal_tensor = np.array([[[s for s in combined_mesh.paint().r2c().apply(
-        lambda k, v: k[i] * k[j] / (sum(ki**2 for ki in k) + EPSILON) * v
-    ).c2r().readout([mmbhpos])] for i in range(0, 3)] for j in range(0, 3)]).reshape(3, 3)
-
-    tidal_tensor -= np.trace(tidal_tensor) * np.identity(3) / 3.
-
-    # tt: eigenvalues of tidal field tensor
-    tt = np.array([u for u in la.eigvals(tidal_tensor)])
-    return tt.max()
 
 
-def append_mmbh_data(part, redshifts, mmbhmasss, mmbhids,
-                     mmbhaccs, mmbhposs, mmbhvels, mmbht1s):
-    """
-    append the most massive BHs' data
-    """
+def append_mmbh_data(part: str, redshifts: List, mmbhmasss: List,
+        mmbhids: List, mmbhaccs: List, mmbhposs: List, mmbhvels: List):
+    """ Append the most massive BHs' quantities. """
     bf = BigFile(part)
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.
 
-    bhmass = bf.open('5/BlackholeMass')[:]
+    bhmass = bf.open('5/BlackholeMass')[:] * TO_MSUN
 
     no_blackhole = len(bhmass) == 0
     if no_blackhole:
-        print('There is no BH formed at z = %0.2f' % redshift)
-        return
+        print('    No BH formed at z = %0.2f' % redshift)
+        return  None
 
-    print('Calculating properties at z = %0.2f' % redshift)
     bhid = bf.open('5/ID')[:]
-    bhacc = bf.open('5/BlackholeAccretionRate')[:]
+    bhacc = bf.open('5/BlackholeAccretionRate')[:] * TO_MSUN_YEAR
     bhpos = bf.open('5/Position')[:]
     bhvel = bf.open('5/Velocity')[:]
 
@@ -60,34 +33,24 @@ def append_mmbh_data(part, redshifts, mmbhmasss, mmbhids,
     mmbhpos = bhpos[np.argmax(bhmass)]
     mmbhvel = bhvel[np.argmax(bhmass)]
 
-    if GET_T1 & (redshift <= STARTZ) & (np.abs(redshift - round(redshift)) < DZ):
-        print('    calculating t1...')
-        mmbht1 = [get_t1(part, mmbhpos, nmesh) for nmesh in NMESHS]
-    else:
-        print('    skip t1 calculation...')
-        mmbht1 = [np.nan] * len(NMESHS)
-
-    # append data
+    print('    Appending BH quantities at z = %0.4f' % redshift)
     redshifts.append(redshift)
     mmbhmasss.append(mmbhmass)
     mmbhids.append(mmbhid)
     mmbhaccs.append(mmbhacc)
     mmbhposs.append(mmbhpos)
     mmbhvels.append(mmbhvel)
-    mmbht1s.append(mmbht1)
 
 
-def append_merger_data(part, mergerid, merger_datas):
-    """
-    append the merger tree from the most massive BHs' data
-    """
+def append_merger_data(part: str, mergerid: np.ndarray, merger_datas: List):
+    """ Append the merger history of the most massive BH """
     bf = BigFile(part)
     header = bf.open('Header')
     redshift = 1. / header.attrs['Time'][0] - 1.
 
-    bhmass = bf.open('5/BlackholeMass')[:]
+    bhmass = bf.open('5/BlackholeMass')[:] * TO_MSUN
     bhid = bf.open('5/ID')[:]
-    bhacc = bf.open('5/BlackholeAccretionRate')[:]
+    bhacc = bf.open('5/BlackholeAccretionRate')[:] * TO_MSUN_YEAR
     bhpos = bf.open('5/Position')[:]
     bhvel = bf.open('5/Velocity')[:]
 
@@ -99,19 +62,18 @@ def append_merger_data(part, mergerid, merger_datas):
             bhpos_i = bhpos[mask_i]
             bhvel_i = bhvel[mask_i]
 
-            merger_data = np.array([mergerid, redshift, bhmass_i[0], bhacc_i[0],
-                                    bhpos_i[0][0], bhpos_i[0][1], bhpos_i[0][2],
-                                    bhvel_i[0][0], bhvel_i[0][1], bhvel_i[0][2]])
+            merger_data = [mergerid, redshift, bhmass_i[0], bhacc_i[0],
+                           bhpos_i[0][0], bhpos_i[0][1], bhpos_i[0][2],
+                           bhvel_i[0][0], bhvel_i[0][1], bhvel_i[0][2]]
             merger_datas.append(merger_data)
 
 
-def main():
-    """
-    get properties of the most massive black hole from all PART files
-    """
-    print('Start getting properties of mmbhs from all PARTs')
+
+if __name__ == '__main__':
+
+    print('Getting properties of the most massive BH from all PART files\n')
     parts = sorted(glob.glob('{}PART_*'.format(PATH_RUN)))
-    print('There are %d part files \n' % len(parts))
+    print('There are %d PART files \n' % len(parts))
 
     redshifts = []
     mmbhmasss = []
@@ -119,44 +81,49 @@ def main():
     mmbhaccs = []
     mmbhposs = []
     mmbhvels = []
-    mmbht1s = []
 
+    print('Starting looping through all PART files\n')
     for part in parts:
-        append_mmbh_data(part, redshifts, mmbhmasss, mmbhids,
-                         mmbhaccs, mmbhposs, mmbhvels, mmbht1s)
+        append_mmbh_data(
+            part, redshifts, mmbhmasss, mmbhids, mmbhaccs, mmbhposs, mmbhvels)
 
-    dir_name = 'partbhs/'
-    create_dir(dir_name)
+    print('\nConverting the lists into a dict\n')
+    dict = {}
+    dict['redshifts'] = np.array(redshifts)
+    dict['mmbhmasss'] = np.array(mmbhmasss)
+    dict['mmbhaccs'] = np.array(mmbhaccs)
+    dict['mmbhposs'] = np.array(mmbhposs[0])
+    dict['mmbhvels'] = np.array(mmbhvels[0])
+    dict['mmbhids'] = np.array(mmbhids)
 
-    np.save('{}redshifts'.format(dir_name), np.array(redshifts))
-    np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
-    np.save('{}mmbhids'.format(dir_name), np.array(mmbhids))
-    np.save('{}mmbhaccs'.format(dir_name), np.array(mmbhaccs))
-    np.save('{}mmbhposs'.format(dir_name), np.array(mmbhposs[0]))
-    np.save('{}mmbhvels'.format(dir_name), np.array(mmbhvels[0]))
-    np.save('{}mmbht1s'.format(dir_name), np.array(mmbht1s))
+    print('Saving the dict to a npy\n')
+    np.save('partmmbh', dict)
 
-    print('\n')
-    print('t1 are measured in (Mpc):')
-    print(BOXSIZE / np.array([NMESHS]))
-    print('Done with mmbh data from PARTs :) \n')
+    print('Done with mmbh data from PARTs. \n')
+    print('------------------------------------------------------------')
 
-    print('Start dealing with mergers')
-    mergerids = np.unique(mmbhids)
-    print('There are %d mergers happened. \n' % len(mergerids))
+    print('\nStart dealing with mergers\n')
+    mergerids = np.unique(mmbhids)    # bhids for the mmbh
+    print('There are %d mergers happened. \n' % (len(mergerids) - 1))
 
     merger_datas = []
 
+    print('Looping through all merger BH ids\n')
     for mergerid in mergerids:
         for part in parts:
             append_merger_data(part, mergerid, merger_datas)
 
     merger_datas = np.array(merger_datas)
-    np.save('{}merger_datas'.format(dir_name), merger_datas)
 
-    print('Done with merger data.')
+    print('\nConverting the lists into a dict\n')
+    dict = {}
+    keys = ['mergerid', 'redshift', 'bhmass', 'bhacc',
+            'bhposx', 'bhposy', 'bhposz', 'bhvelx', 'bhvely', 'bhvelz']
+    for i,k in enumerate(keys):
+        dict[k] = merger_datas[:, i]
+
+    print('Saving the dict to a npy\n')
+    np.save('mergermmbh', dict)
+
+    print('Done with merger data.\n')
     print('Yeah we are finished :)')
-
-
-if __name__ == '__main__':
-    main()
