@@ -1,1 +1,1 @@
-rm  -rf  __pycache__  *.npy
+rm  -rf  __pycache__  *.npy  pigmfs
