@@ -1,15 +1,17 @@
-import numpy as np
 import glob
+import numpy as np
+
 from bigfile import BigFile
-from mmbh_func import *
+from mmbh_param import PATH_RUN, TO_MSUN, TO_MSUN_YEAR
 
 
-def main():
-    """
-    get properties of the most massive black hole from all PIG files
-    """
+
+if __name__ == '__main__':
+    
+    print('Get properties of the most massive black hole from all PIG files')
     pigs = sorted(glob.glob('{}PIG_*'.format(PATH_RUN)))
     bfs = [BigFile(pig) for pig in pigs]
+    print('There are %d PIG files \n' % len(bfs))
 
     redshifts = []
     mmbhmasss = []
@@ -18,16 +20,17 @@ def main():
     mmbhaccs = []
     mmbhsfrs = []
 
+    print('Starting looping through all PIG files\n')
     for bf in bfs:
         header = bf.open('Header')
         redshift = 1. / header.attrs['Time'][0] - 1.
 
-        bhmass = bf.open('5/BlackholeMass')[:]
+        bhmass = bf.open('5/BlackholeMass')[:] * TO_MSUN
         bhfofid = bf.open('5/GroupID')[:]
-        halomass = bf.open('FOFGroups/Mass')[:]
+        halomass = bf.open('FOFGroups/Mass')[:] * TO_MSUN
         halofofid = bf.open('FOFGroups/GroupID')[:]
-        starmass = bf.open('FOFGroups/MassByType')[:][:, 4]
-        bhacc = bf.open('5/BlackholeAccretionRate')[:]
+        starmass = bf.open('FOFGroups/MassByType')[:][:, 4] * TO_MSUN
+        bhacc = bf.open('5/BlackholeAccretionRate')[:] * TO_MSUN_YEAR
         sfr = bf.open('FOFGroups/StarFormationRate')[:]
 
         no_blackhole = len(bhmass) == 0
@@ -48,13 +51,14 @@ def main():
                 mmbhstarmass = np.nan
                 mmbhsfr = np.nan
             else:
-                mmbhhalomass = halomass[halofofid == fofid_target][0]
+                mask_fofid = halofofid == fofid_target
+                mmbhhalomass = halomass[mask_fofid][0]
                 mmbhhalomass = np.nan if mmbhhalomass==0 else mmbhhalomass
-                mmbhstarmass = starmass[halofofid == fofid_target][0]
+                mmbhstarmass = starmass[mask_fofid][0]
                 mmbhstarmass = np.nan if mmbhstarmass==0 else mmbhstarmass
-                mmbhsfr = sfr[halofofid == fofid_target][0]
-        
-        # append data
+                mmbhsfr = sfr[mask_fofid][0]
+
+        print('    Appending bh quantities at z = %0.4f' % redshift)
         redshifts.append(redshift)
         mmbhmasss.append(mmbhmass)
         mmbhhalomasss.append(mmbhhalomass)
@@ -62,18 +66,16 @@ def main():
         mmbhaccs.append(mmbhacc)
         mmbhsfrs.append(mmbhsfr)
 
-    dir_name = 'pigbhs/'
-    create_dir(dir_name)
+    print('\nConverting the lists into a dict\n')
+    dict = {}
+    dict['redshifts'] = np.array(redshifts)
+    dict['mmbhmasss'] = np.array(mmbhmasss)
+    dict['mmbhhalomasss'] = np.array(mmbhhalomasss)
+    dict['mmbhstarmasss'] = np.array(mmbhstarmasss)
+    dict['mmbhaccs'] = np.array(mmbhaccs)
+    dict['mmbhsfrs'] = np.array(mmbhsfrs)
 
-    np.save('{}redshifts'.format(dir_name), np.array(redshifts))
-    np.save('{}mmbhmasss'.format(dir_name), np.array(mmbhmasss))
-    np.save('{}mmbhhalomasss'.format(dir_name), np.array(mmbhhalomasss))
-    np.save('{}mmbhstarmasss'.format(dir_name), np.array(mmbhstarmasss))
-    np.save('{}mmbhsfrs'.format(dir_name), np.array(mmbhsfrs))
-    np.save('{}mmbhaccs'.format(dir_name), np.array(mmbhaccs))
+    print('Saving the dict to a npy\n')
+    np.save('pigmmbh', dict)
 
-    print('Done with mmbh data from PIGs.')
-
-
-if __name__ == '__main__':
-    main()
+    print('Done with mmbh data from PIGs :)')
