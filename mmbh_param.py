@@ -1,6 +1,6 @@
 
 # PATH_RUN = '/home/dir/'
-PATH_RUN = '/home/kwhuang/B5H10/'
+PATH_RUN = '../'
 
 BOXSIZE = 15.    # Mpc/h
 
