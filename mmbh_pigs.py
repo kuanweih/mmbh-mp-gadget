@@ -68,12 +68,12 @@ if __name__ == '__main__':
 
     print('\nConverting the lists into a dict\n')
     dict = {}
-    dict['redshifts'] = np.array(redshifts)
-    dict['mmbhmasss'] = np.array(mmbhmasss)
-    dict['mmbhhalomasss'] = np.array(mmbhhalomasss)
-    dict['mmbhstarmasss'] = np.array(mmbhstarmasss)
-    dict['mmbhaccs'] = np.array(mmbhaccs)
-    dict['mmbhsfrs'] = np.array(mmbhsfrs)
+    dict['redshift'] = np.array(redshifts)
+    dict['mmbhmass'] = np.array(mmbhmasss)
+    dict['mmbhhalomass'] = np.array(mmbhhalomasss)
+    dict['mmbhstarmass'] = np.array(mmbhstarmasss)
+    dict['mmbhacc'] = np.array(mmbhaccs)
+    dict['mmbhsfr'] = np.array(mmbhsfrs)
 
     print('Saving the dict to a npy\n')
     np.save('pigmmbh', dict)
