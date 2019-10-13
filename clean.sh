@@ -1,1 +1,1 @@
-rm  -rf  __pycache__  *.npy  pigmfs
+rm  -rf  __pycache__  output

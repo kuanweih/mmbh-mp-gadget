@@ -3,7 +3,6 @@ import numpy as np
 # import multiprocessing as mp
 
 from mmbh_param import *
-# from typing import Type
 from bigfile import BigFile
 # from functools import partial
 
@@ -64,13 +63,14 @@ def calc_mf_each_bf(dir_name: str, bf: BigFile):
 
 
 if __name__ == '__main__':
+    print('\n------------------------------------------------------------\n')
     print('Getting MFs of all PIGs\n')
     pigs = sorted(glob.glob('{}PIG_*'.format(PATH_RUN)))
     bfs = [BigFile(pig) for pig in pigs]
     print('There are %d PIG files \n' % len(bfs))
 
     print('Creating pigmfs dir to output MFs.\n')
-    dir_name = 'pigmfs/'
+    dir_name = 'output/pigmfs/'
     create_dir(dir_name)
 
     print('Looping through all PIG files\n')

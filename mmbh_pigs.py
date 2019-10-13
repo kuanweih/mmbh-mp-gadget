@@ -7,7 +7,7 @@ from mmbh_param import PATH_RUN, TO_MSUN, TO_MSUN_YEAR
 
 
 if __name__ == '__main__':
-
+    print('\n------------------------------------------------------------\n')
     print('Getting properties of the most massive BH from all PIG files\n')
     pigs = sorted(glob.glob('{}PIG_*'.format(PATH_RUN)))
     bfs = [BigFile(pig) for pig in pigs]
@@ -76,6 +76,6 @@ if __name__ == '__main__':
     dict['mmbhsfr'] = np.array(mmbhsfrs)
 
     print('Saving the dict to a npy\n')
-    np.save('pigmmbh', dict)
+    np.save('output/pigmmbh', dict)
 
     print('Done with mmbh data from PIGs :)')

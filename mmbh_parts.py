@@ -105,6 +105,7 @@ def calc_t1(part: str, mmbhpos: np.ndarray, nmesh: List):
 
 
 if __name__ == '__main__':
+    print('\n------------------------------------------------------------\n')
     print('Getting properties of the most massive BH from all PART files\n')
     parts = sorted(glob.glob('{}PART_*'.format(PATH_RUN)))
     print('There are %d PART files \n' % len(parts))
@@ -135,7 +136,7 @@ if __name__ == '__main__':
         dict['mmbht1_%0.1fMpc' % (BOXSIZE / n)] = np.array(mmbht1s)[:, i]
 
     print('Saving the dict to a npy\n')
-    np.save('partmmbh', dict)
+    np.save('output/partmmbh', dict)
 
     print('Done with mmbh data from PARTs. \n')
     print('------------------------------------------------------------')
@@ -161,7 +162,7 @@ if __name__ == '__main__':
         dict[k] = merger_datas[:, i]
 
     print('Saving the dict to a npy\n')
-    np.save('mergermmbh', dict)
+    np.save('output/mergermmbh', dict)
 
     print('Done with merger data.\n')
     print('Yeah we are finished :)')
