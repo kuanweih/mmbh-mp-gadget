@@ -1,10 +1,16 @@
 
-PATH_RUN = '/home/dir/'
+# PATH_RUN = '/home/dir/'
+PATH_RUN = '/home/kwhuang/B5H10/'
 
 BOXSIZE = 15.    # Mpc/h
 
+
+""" code units to paper units """
 HUBBLE = 0.697
-TOMSUN = 1e10 / HUBBLE
+TO_MSUN = 1e10 / HUBBLE    # mass to Msun
+TO_MSUN_YEAR = 10.2    # accretion rate to Msun/yr
+
+
 
 """ mass funcstions """
 N_BIN = 30
@@ -15,10 +21,11 @@ BH_MAX = 1e9
 STAR_MIN = 1e5
 STAR_MAX = 1e12
 
+
 """ t1 calculations"""
-GET_T1 = False
+GET_T1 = True
 STARTZ = 15
-DZ = 0.04    # select output redshift range around int
+DZ = 0.005    # select output redshift range around int
 NMESHS = [15, 10, 5, 3]    # BOXSIZE / scales
 EPSILON = 1e-40    # deal with ki==0.
 
