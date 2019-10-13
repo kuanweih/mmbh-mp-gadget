@@ -21,10 +21,11 @@ BH_MAX = 1e9
 STAR_MIN = 1e5
 STAR_MAX = 1e12
 
+
 """ t1 calculations"""
-GET_T1 = False
+GET_T1 = True
 STARTZ = 15
-DZ = 0.04    # select output redshift range around int
+DZ = 0.005    # select output redshift range around int
 NMESHS = [15, 10, 5, 3]    # BOXSIZE / scales
 EPSILON = 1e-40    # deal with ki==0.
 
