@@ -10,4 +10,6 @@ Python scripts to get properties of the most massive black hole from PART and PI
   - ``` python -W ignore mmbh_pigs.py ``` to get the quantities of host galaxy and halo of the most massive BH from PIG files.
   - ``` python -W ignore massfunctions.py ``` to calculate halo and galaxy mass function from PIG files.
   - OR the slurm script: ``` sbatch slurm-coma.sh ```
+5. Shall get an `output` directory containing the result.
+ 
   
