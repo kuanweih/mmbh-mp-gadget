@@ -1,1 +1,1 @@
-rm  -rf  __pycache__  output
+rm  -rf  __pycache__  output/*
