@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --export=NONE
 #SBATCH --partition=long
-#SBATCH --ntasks=20
+#SBATCH --nodes=1
+#SBATCH --ntasks=16
 #SBATCH --time=72:00:00
 #SBATCH --job-name=mmbh
-#SBATCH --output=mmbh
 
+source activate mypython3
 
-source active mypython3
 mkdir output
 
 python  -W  ignore  mmbh_pigs.py
